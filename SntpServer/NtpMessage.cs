@@ -4,15 +4,24 @@ using System.Text;
 
 namespace SntpServer
 {
+	public enum LeapIndicator
+	{
+		NoWarning = 0,
+		LastMinuteContains61Second = 1,
+		LastMinuteContains59Second = 2,
+		NotSyncrhonizied = 3
+	}
+
 	public class NtpMessage
 	{
 		private const int MinMessageSizeInBytes = 48;
 		private const int MaxMessageSizeInBytes = 68;
 		private const int RequestMode = 4;
-		private static readonly DateTime StartTime = new DateTime(1900, 1, 1, 0, 0, 0);
+		private static readonly DateTime StartTime = new DateTime(1900, 1, 1);
 
 		#region Properties
-		public int LeapIndicator { get; private set; }
+
+		public LeapIndicator LeapIndicator { get; private set; }
 		public int VersionNumber { get; private set; }
 		public int Mode { get; private set; }
 		public byte Stratum { get; private set; }
@@ -34,7 +43,7 @@ namespace SntpServer
 			if (bytes.Length < MinMessageSizeInBytes || bytes.Length > MaxMessageSizeInBytes)
 				return Result.Fail<NtpMessage>("Incorrect input data (should be more than 48 and less than 68)");
 
-			var leapIndicator = (bytes[0] & 0b11000000) >> 6;
+			var leapIndicator = (LeapIndicator)((bytes[0] & 0b11000000) >> 6);
 			var versionNumber = (bytes[0] & 0b00111000) >> 3;
 			var mode = bytes[0] & 0b00000111;
 
@@ -79,7 +88,7 @@ namespace SntpServer
 			var receiveTimestamp = TimeStamp.FromDateTime(currentTime - StartTime);
 			var result = new NtpMessage
 			{
-				LeapIndicator = 0,
+				LeapIndicator = LeapIndicator.NoWarning,
 				VersionNumber = ntpRequest.VersionNumber,
 				Mode = RequestMode,
 				Stratum = 1,
@@ -102,7 +111,7 @@ namespace SntpServer
 		{
 			var result = new byte[MaxMessageSizeInBytes];
 
-			result[0] = (byte)((LeapIndicator << 6) + (VersionNumber << 3) + Mode);
+			result[0] = (byte)(((int)LeapIndicator << 6) + (VersionNumber << 3) + Mode);
 			result[1] = Stratum;
 			result[2] = PollInterver;
 			result[3] = Precision;

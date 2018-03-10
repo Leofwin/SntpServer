@@ -5,3 +5,4 @@ E:\ProgramFiles\VisualStudioProjects\SntpServer\SntpServer\obj\Debug\SntpServer.
 E:\ProgramFiles\VisualStudioProjects\SntpServer\SntpServer\obj\Debug\SntpServer.csproj.CoreCompileInputs.cache
 E:\ProgramFiles\VisualStudioProjects\SntpServer\SntpServer\obj\Debug\SntpServer.exe
 E:\ProgramFiles\VisualStudioProjects\SntpServer\SntpServer\obj\Debug\SntpServer.pdb
+E:\ProgramFiles\VisualStudioProjects\SntpServer\SntpServer\bin\Debug\System.ValueTuple.dll
